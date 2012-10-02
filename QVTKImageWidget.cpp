@@ -8,7 +8,7 @@
 
 #include "QVTKImageWidget.h"
 #include "QVTKImageWidgetCommand.h"
-#include "vtkScribbleInteractorStyle.h"
+#include "vtkTracerInteractorStyle.h"
 
 #include <QSize.h>
 #include <QBoxLayout>
@@ -50,7 +50,7 @@ QVTKImageWidget::QVTKImageWidget(QWidget *parent) : QWidget(parent)
     this->setLayout(layout);
 
     // by default 
-	this->probeFlag = false;
+	this->probeFlag = true;
     this->isImageStackLoaded = false;
     this->imageDisplayedIndex = 0;
 
@@ -213,37 +213,14 @@ void QVTKImageWidget::initPicker()
 void QVTKImageWidget::startTracer()
 {
 
-  vtkSmartPointer<vtkScribbleInteractorStyle> style = vtkSmartPointer<vtkScribbleInteractorStyle>::New();
+  vtkSmartPointer<vtkTracerInteractorStyle> style = vtkSmartPointer<vtkTracerInteractorStyle>::New();
   imageViewer->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
   
   imageViewer->Render();
   imageViewer->GetRenderer()->ResetCamera();
   imageViewer->Render();
 
-  style->InitializeTracer(imageActor);
-  /*vtkSmartPointer<vtkImageTracerWidget> tracer =
-    vtkSmartPointer<vtkImageTracerWidget>::New();
-  /*tracer->GetLineProperty()->SetLineWidth(1);
-  tracer->GetLineProperty()->SetColor(255,255,255);
-  tracer->SetInteractor(imageViewer->GetRenderWindow()->GetInteractor());
-  tracer->SetViewProp(imageActor);
-  tracer->AutoCloseOff();*/
-
- //tracer->SetInteractor(imageViewer->GetRenderWindow()->GetInteractor());
- //tracer->SetViewProp(imageActor);
-  //tracer->ProjectToPlaneOn();
-  //tracer->SetInputData(imageActor->GetInput());
-  //tracer->SnapToImageOn();
- 
-
- 
-  //vtkSmartPointer<vtkCallbackCommand> callback =
-  //vtkSmartPointer<vtkCallbackCommand>::New();
-  //callback->SetCallback(CallbackFunction);
-  //tracer->AddObserver(vtkCommand::EndInteractionEvent, callback);
- 
-  //tracer->On();
-
+  style->initTracer(imageActor);
 
 }
 

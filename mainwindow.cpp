@@ -122,10 +122,10 @@ void MainWindow::checkCalibrationError()
 
 	  
       // get left mouse pressed with high priority
-      Connections->Connect(displayWidget->getQVTKWidget()->GetRenderWindow()->GetInteractor(),
-                           vtkCommand::LeftButtonPressEvent,
-						   checkCalibrationWidget,
-						   SLOT(loadRotations()));
+      //Connections->Connect(displayWidget->getQVTKWidget()->GetRenderWindow()->GetInteractor(),
+      //                     vtkCommand::LeftButtonPressEvent,
+	  //				   checkCalibrationWidget,
+	  //				   SLOT(loadRotations()));
 
       checkCalibrationWidget->setMainWindow(this);
       checkCalibrationWidget->show();
