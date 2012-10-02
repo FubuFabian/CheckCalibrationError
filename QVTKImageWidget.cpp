@@ -8,6 +8,7 @@
 
 #include "QVTKImageWidget.h"
 #include "QVTKImageWidgetCommand.h"
+#include "vtkScribbleInteractorStyle.h"
 
 #include <QSize.h>
 #include <QBoxLayout>
@@ -212,17 +213,15 @@ void QVTKImageWidget::initPicker()
 void QVTKImageWidget::startTracer()
 {
 
-
- vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
-    vtkSmartPointer<vtkRenderWindowInteractor>::New();
-   vtkSmartPointer<vtkInteractorStyleImage> style =
-    vtkSmartPointer<vtkInteractorStyleImage>::New();
-  renderWindowInteractor->SetInteractorStyle(style);
-  imageViewer->GetRenderWindow()->SetInteractor(renderWindowInteractor);
+  vtkSmartPointer<vtkScribbleInteractorStyle> style = vtkSmartPointer<vtkScribbleInteractorStyle>::New();
+  imageViewer->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
+  
   imageViewer->Render();
   imageViewer->GetRenderer()->ResetCamera();
   imageViewer->Render();
-  vtkSmartPointer<vtkImageTracerWidget> tracer =
+
+  style->InitializeTracer(imageActor);
+  /*vtkSmartPointer<vtkImageTracerWidget> tracer =
     vtkSmartPointer<vtkImageTracerWidget>::New();
   /*tracer->GetLineProperty()->SetLineWidth(1);
   tracer->GetLineProperty()->SetColor(255,255,255);
@@ -230,20 +229,20 @@ void QVTKImageWidget::startTracer()
   tracer->SetViewProp(imageActor);
   tracer->AutoCloseOff();*/
 
-  tracer->SetInteractor(renderWindowInteractor);
-  tracer->SetViewProp(imageActor);
-  tracer->ProjectToPlaneOn();
+ //tracer->SetInteractor(imageViewer->GetRenderWindow()->GetInteractor());
+ //tracer->SetViewProp(imageActor);
+  //tracer->ProjectToPlaneOn();
   //tracer->SetInputData(imageActor->GetInput());
-  tracer->SnapToImageOn();
+  //tracer->SnapToImageOn();
  
 
  
-  vtkSmartPointer<vtkCallbackCommand> callback =
-  vtkSmartPointer<vtkCallbackCommand>::New();
-  callback->SetCallback(CallbackFunction);
-  tracer->AddObserver(vtkCommand::EndInteractionEvent, callback);
+  //vtkSmartPointer<vtkCallbackCommand> callback =
+  //vtkSmartPointer<vtkCallbackCommand>::New();
+  //callback->SetCallback(CallbackFunction);
+  //tracer->AddObserver(vtkCommand::EndInteractionEvent, callback);
  
-  tracer->On();
+  //tracer->On();
 
 
 }

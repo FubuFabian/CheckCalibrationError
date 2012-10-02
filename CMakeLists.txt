@@ -42,10 +42,10 @@ INCLUDE_DIRECTORIES(
  
 # Set your files and resources here
 SET(AppSrcs main.cpp mainwindow.cpp QVTKImageWidget.cpp QVTKImageWidgetCommand.cpp 
-    ProbeCalibrationWidget.cpp Calibration.cpp CheckCalibrationErrorWidget.cpp)
+    ProbeCalibrationWidget.cpp Calibration.cpp CheckCalibrationErrorWidget.cpp vtkScribbleInteractorStyle.cpp)
     
 SET(AppHeaders mainwindow.h QVTKImageWidget.h QVTKImageWidgetCommand.h 
-    ProbeCalibrationWidget.h Calibration.h CheckCalibrationErrorWidget.h)
+    ProbeCalibrationWidget.h Calibration.h CheckCalibrationErrorWidget.h vtkScribbleInteractorStyle.h)
     
 SET(AppUI mainwindow.ui ProbeCalibrationWidget.ui CheckCalibrationErrorWidget.ui)
  
