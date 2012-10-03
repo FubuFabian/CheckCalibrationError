@@ -118,6 +118,7 @@ void MainWindow::checkCalibrationError()
       else
         checkCalibrationWidget->setImage(displayWidget->getImageViewer()->GetInput());
 
+	    displayWidget->setCalibrationErrorWidget(checkCalibrationWidget);
 	  	displayWidget->setProbeFlag(false);
 		displayWidget->startTracer();
 	  

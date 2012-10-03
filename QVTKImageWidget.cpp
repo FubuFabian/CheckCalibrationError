@@ -8,7 +8,7 @@
 
 #include "QVTKImageWidget.h"
 #include "QVTKImageWidgetCommand.h"
-
+#include "CheckCalibrationErrorWidget.h"
 
 #include <QSize.h>
 #include <QBoxLayout>
@@ -341,4 +341,9 @@ QString QVTKImageWidget::getNumOfDimesions()
 int QVTKImageWidget::getImageDisplayedIndex()
 {
     return imageDisplayedIndex;
+}
+
+void QVTKImageWidget::setCalibrationErrorWidget(CheckCalibrationErrorWidget* calibrationErrorWidget)
+{
+	this->calibrationErrorWidget = calibrationErrorWidget;
 }

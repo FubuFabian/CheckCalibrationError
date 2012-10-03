@@ -6,17 +6,16 @@
 
 #include <QWidget>
 
-namespace Ui {
-class CheckCalibrationErrorWidget;
-}
 
-class CheckCalibrationErrorWidget : public QWidget
+class CheckCalibrationErrorWidget : public QWidget, private Ui::CheckCalibrationErrorWidget
 {
     Q_OBJECT
     
 public:
-    explicit CheckCalibrationErrorWidget(QWidget *parent = 0);
-    ~CheckCalibrationErrorWidget();
+       /** Constructor */
+    CheckCalibrationErrorWidget(QWidget* parent = 0);
+    
+    virtual ~CheckCalibrationErrorWidget();
 
 	 /**
      * \brief Set this stack of vtkImageData 
@@ -62,6 +61,8 @@ private:
     
     /** \brief the vtkImageData to work */
     vtkSmartPointer<vtkImageData> image;
+
+	virtual void closeEvent( QCloseEvent * event);	
 
 private slots:
 

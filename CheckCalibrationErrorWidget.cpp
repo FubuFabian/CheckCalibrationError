@@ -1,15 +1,15 @@
 #include "CheckCalibrationErrorWidget.h"
 
-CheckCalibrationErrorWidget::CheckCalibrationErrorWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::CheckCalibrationErrorWidget)
+CheckCalibrationErrorWidget::CheckCalibrationErrorWidget(QWidget* parent) : QWidget(parent)
 {
-    ui->setupUi(this);
+    this->setupUi(this);
+    
 }
+
 
 CheckCalibrationErrorWidget::~CheckCalibrationErrorWidget()
 {
-    delete ui;
+    delete this;
 }
 
 void CheckCalibrationErrorWidget::loadCenter()
@@ -196,4 +196,12 @@ setImageStack(std::vector<vtkSmartPointer<vtkImageData> > imagestack)
 void CheckCalibrationErrorWidget::setMainWindow(MainWindow* mainwindow)
 {
     this->mainWindow = mainwindow;
+}
+
+void CheckCalibrationErrorWidget::closeEvent( QCloseEvent * event)
+{
+	mainWindow->getDisplayWidget()->tracerStyle->clearTracer();
+	mainWindow->getDisplayWidget()->probeFlag = true;
+	mainWindow->getDisplayWidget()->initPicker();
+	event->accept();
 }

@@ -46,16 +46,12 @@
 
 #include "vtkTracerInteractorStyle.h"
 
+
 typedef itk::RGBPixel< unsigned char > RGBPixelType;
 typedef itk::Image< unsigned char > ImageType;
 typedef itk::Image< RGBPixelType, 2> RGBImageType;
 
-namespace
-{
-void CallbackFunction (vtkObject* caller, long unsigned int eventId,
-                        void* clientData, void* callData );
- 
-}
+class CheckCalibrationErrorWidget;
 
 //!Display VTK images
 /*!
@@ -175,6 +171,8 @@ public:
      * \param[out] int y position
      */
     void setYPicked(int yPosition);   
+
+	
     
     /**
      * \brief Return this widget image viewer
@@ -199,6 +197,10 @@ public:
     bool isImageStackLoaded;
 
 	bool probeFlag;
+
+	vtkSmartPointer<vtkTracerInteractorStyle> tracerStyle;
+
+	void setCalibrationErrorWidget(CheckCalibrationErrorWidget* calibrationErrorWidget); 
 
 private:    
 
@@ -281,8 +283,8 @@ private:
     /** \brief Object for display information in the corners of the vtkImageViewer2 */
     vtkSmartPointer<vtkCornerAnnotation> cornerAnnotation;
 
-	vtkSmartPointer<vtkTracerInteractorStyle> tracerStyle;
-    
+	
+    CheckCalibrationErrorWidget* calibrationErrorWidget;
 
 };
 
