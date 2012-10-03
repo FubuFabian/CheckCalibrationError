@@ -118,8 +118,8 @@ void MainWindow::checkCalibrationError()
       else
         checkCalibrationWidget->setImage(displayWidget->getImageViewer()->GetInput());
 
-	  	  displayWidget->setProbeFlag(false);
-
+	  	displayWidget->setProbeFlag(false);
+		displayWidget->startTracer();
 	  
       // get left mouse pressed with high priority
       //Connections->Connect(displayWidget->getQVTKWidget()->GetRenderWindow()->GetInteractor(),

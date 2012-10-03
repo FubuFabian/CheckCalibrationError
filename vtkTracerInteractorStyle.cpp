@@ -34,8 +34,6 @@ void vtkTracerInteractorStyle::catchEvent(vtkObject* caller, long unsigned int e
   vtkSmartPointer<vtkPolyData> path = vtkSmartPointer<vtkPolyData>::New();
   tracerEvent->GetPath(path);
 
-  clearTracer();
-
 }
 
 void vtkTracerInteractorStyle::clearTracer()

@@ -16,10 +16,11 @@ public:
     vtkTracerInteractorStyle();
 
     void initTracer(vtkSmartPointer<vtkImageActor> imageActor);
+	void clearTracer();
 
 private:
 
-    void clearTracer();
+    
     void catchEvent(vtkObject* caller, long unsigned int eventId, void* callData);
 
     vtkSmartPointer<vtkImageTracerWidget> tracer;

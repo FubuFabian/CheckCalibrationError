@@ -8,7 +8,7 @@
 
 #include "QVTKImageWidget.h"
 #include "QVTKImageWidgetCommand.h"
-#include "vtkTracerInteractorStyle.h"
+
 
 #include <QSize.h>
 #include <QBoxLayout>
@@ -174,7 +174,11 @@ void QVTKImageWidget::displayImage(vtkImageData *image)
 	if(probeFlag)
 		initPicker();
 	else
-		startTracer();
+	{
+		tracerStyle->clearTracer();
+		startTracer();	
+	}
+		
 }
 
 void QVTKImageWidget::initPicker()
@@ -213,14 +217,14 @@ void QVTKImageWidget::initPicker()
 void QVTKImageWidget::startTracer()
 {
 
-  vtkSmartPointer<vtkTracerInteractorStyle> style = vtkSmartPointer<vtkTracerInteractorStyle>::New();
-  imageViewer->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
+  tracerStyle = vtkSmartPointer<vtkTracerInteractorStyle>::New();
+  imageViewer->GetRenderWindow()->GetInteractor()->SetInteractorStyle(tracerStyle);
   
   imageViewer->Render();
   imageViewer->GetRenderer()->ResetCamera();
   imageViewer->Render();
 
-  style->initTracer(imageActor);
+  tracerStyle->initTracer(imageActor);
 
 }
 

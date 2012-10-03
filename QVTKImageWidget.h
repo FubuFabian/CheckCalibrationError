@@ -44,7 +44,7 @@
 #include <vtkImageTracerWidget.h>
 #include <vtkBMPReader.h>
 
-
+#include "vtkTracerInteractorStyle.h"
 
 typedef itk::RGBPixel< unsigned char > RGBPixelType;
 typedef itk::Image< unsigned char > ImageType;
@@ -280,80 +280,11 @@ private:
     
     /** \brief Object for display information in the corners of the vtkImageViewer2 */
     vtkSmartPointer<vtkCornerAnnotation> cornerAnnotation;
+
+	vtkSmartPointer<vtkTracerInteractorStyle> tracerStyle;
     
 
 };
 
-namespace
-{
-void CallbackFunction (vtkObject* caller, long unsigned int eventId,
-                        void* clientData, void* callData )
-{
-  vtkImageTracerWidget* tracerWidget =
-    static_cast<vtkImageTracerWidget*>(caller);
- 
-  vtkSmartPointer<vtkPolyData> path =
-    vtkSmartPointer<vtkPolyData>::New();
-	
-  tracerWidget->GetPath(path);
-  
-  vtkSmartPointer<vtkPoints> points =  vtkSmartPointer<vtkPoints>::New();
-  points = path->GetPoints();
 
-  double * x = points->GetPoint(4);
-  std::cout << x[0] << "," << x[1] << std::endl;
-
-
-  /*if(!tracerWidget->IsClosed())
-    {
-    std::cout << "Path not closed!" << std::endl;
-    return;
-    }
- 
-  tracerWidget->GetPath(path);
-  std::cout << "There are " << path->GetNumberOfPoints() << " points in the path." << std::endl;
- 
-  vtkImageData* image =
-    static_cast<vtkImageData*>(clientData);
- 
-  vtkSmartPointer<vtkPolyDataToImageStencil> polyDataToImageStencil =
-    vtkSmartPointer<vtkPolyDataToImageStencil>::New();
-  polyDataToImageStencil->SetTolerance(0);
-#if VTK_MAJOR_VERSION <= 5
-  polyDataToImageStencil->SetInputConnection(path->GetProducerPort());
-#else
-  polyDataToImageStencil->SetInputData(path);
-#endif
-  polyDataToImageStencil->SetOutputOrigin(image->GetOrigin());
-  polyDataToImageStencil->SetOutputSpacing(image->GetSpacing());
-  polyDataToImageStencil->SetOutputWholeExtent(image->GetExtent());
-  polyDataToImageStencil->Update();
- 
-  vtkSmartPointer<vtkImageStencilToImage> imageStencilToImage =
-    vtkSmartPointer<vtkImageStencilToImage>::New();
-  imageStencilToImage->SetInputConnection(polyDataToImageStencil->GetOutputPort());
-  imageStencilToImage->SetInsideValue(255);
-  imageStencilToImage->Update();
- 
-  vtkSmartPointer<vtkImageAccumulate> imageAccumulate =
-    vtkSmartPointer<vtkImageAccumulate>::New();
-#if VTK_MAJOR_VERSION <= 5
-  imageAccumulate->SetStencil(polyDataToImageStencil->GetOutput());
-  imageAccumulate->SetInputConnection(image->GetProducerPort());
-#else
-  imageAccumulate->SetStencilData(polyDataToImageStencil->GetOutput());
-  imageAccumulate->SetInputData(image);
-#endif
-  imageAccumulate->Update();
-  std::cout << "Voxel count: " << imageAccumulate->GetVoxelCount() << std::endl;
- 
-  vtkSmartPointer<vtkPNGWriter> writer =
-    vtkSmartPointer<vtkPNGWriter>::New();
-  writer->SetFileName("selection.png");
-  writer->SetInputConnection(imageStencilToImage->GetOutputPort());
-  writer->Write();*/
-}
- 
- 
-} // end anonymous namespace
 #endif
