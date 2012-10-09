@@ -129,6 +129,7 @@ void MainWindow::checkCalibrationError()
 	  //				   SLOT(loadRotations()));
 
       checkCalibrationWidget->setMainWindow(this);
+	  checkCalibrationWidget->setImageStackSize(displayWidget->getImageStackSize());
       checkCalibrationWidget->show();
     }
   else

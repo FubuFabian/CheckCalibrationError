@@ -5,7 +5,7 @@
 #include "mainwindow.h"
 
 #include <QWidget>
-
+#include <vtkPoints.h>
 
 class CheckCalibrationErrorWidget : public QWidget, private Ui::CheckCalibrationErrorWidget
 {
@@ -32,6 +32,10 @@ public:
     
     /** Set the window to display the crop images */
     void setMainWindow(MainWindow* mainwindow);
+
+	void setTracedPoints(vtkSmartPointer<vtkPoints> points);
+
+	void setImageStackSize(int imageStackSize);
     
 private:
     Ui::CheckCalibrationErrorWidget *ui;
@@ -58,9 +62,12 @@ private:
     /** the main window to call it */
     MainWindow* mainWindow;
     
-    
     /** \brief the vtkImageData to work */
     vtkSmartPointer<vtkImageData> image;
+
+	std::vector<vtkSmartPointer< vtkPoints >> pointsVector;
+
+	vtkSmartPointer<vtkPoints> points;
 
 	virtual void closeEvent( QCloseEvent * event);	
 

@@ -3,7 +3,7 @@
 CheckCalibrationErrorWidget::CheckCalibrationErrorWidget(QWidget* parent) : QWidget(parent)
 {
     this->setupUi(this);
-    
+
 }
 
 
@@ -204,4 +204,20 @@ void CheckCalibrationErrorWidget::closeEvent( QCloseEvent * event)
 	mainWindow->getDisplayWidget()->probeFlag = true;
 	mainWindow->getDisplayWidget()->initPicker();
 	event->accept();
+}
+
+void CheckCalibrationErrorWidget::setTracedPoints(vtkSmartPointer<vtkPoints> points)
+{
+ 	int row = mainWindow->getDisplayWidget()->getImageDisplayedIndex();
+	//pointsVector[row] = points;
+
+	QString str;
+
+	tableWidget->setItem(row, 0, new QTableWidgetItem(str.setNum(row)));
+    tableWidget->setItem(row, 1, new QTableWidgetItem("Ok"));
+}
+
+void CheckCalibrationErrorWidget::setImageStackSize(int imageStackSize)
+{
+ 	pointsVector.reserve(imageStackSize);
 }

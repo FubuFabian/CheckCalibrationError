@@ -347,3 +347,8 @@ void QVTKImageWidget::setCalibrationErrorWidget(CheckCalibrationErrorWidget* cal
 {
 	this->calibrationErrorWidget = calibrationErrorWidget;
 }
+
+int QVTKImageWidget::getImageStackSize()
+{
+	return imageStack.size();
+}

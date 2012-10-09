@@ -6,6 +6,8 @@
 #include <vtkSmartPointer.h>
 #include <vtkImageActor.h>
 
+class CheckCalibrationErrorWidget;
+
 class vtkTracerInteractorStyle : public vtkInteractorStyleImage
 {
 
@@ -18,12 +20,16 @@ public:
     void initTracer(vtkSmartPointer<vtkImageActor> imageActor);
 	void clearTracer();
 
+	void setCalibrationErrorWidget(CheckCalibrationErrorWidget* calibrationErrorWidget);
+
 private:
 
     
     void catchEvent(vtkObject* caller, long unsigned int eventId, void* callData);
 
     vtkSmartPointer<vtkImageTracerWidget> tracer;
+
+	CheckCalibrationErrorWidget* calibrationErrorWidget;
 
 };
 

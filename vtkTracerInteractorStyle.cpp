@@ -1,4 +1,5 @@
 #include "vtkTracerInteractorStyle.h"
+#include "CheckCalibrationErrorWidget.h"
 
 #include <vtkObjectFactory.h>
 #include <vtkProperty.h>
@@ -34,6 +35,10 @@ void vtkTracerInteractorStyle::catchEvent(vtkObject* caller, long unsigned int e
   vtkSmartPointer<vtkPolyData> path = vtkSmartPointer<vtkPolyData>::New();
   tracerEvent->GetPath(path);
 
+  vtkSmartPointer<vtkPoints> points = path->GetPoints();
+
+  calibrationErrorWidget->setTracedPoints(points);
+
 }
 
 void vtkTracerInteractorStyle::clearTracer()
@@ -47,3 +52,7 @@ void vtkTracerInteractorStyle::clearTracer()
   tracer->Off();
 }
 
+void vtkTracerInteractorStyle::setCalibrationErrorWidget(CheckCalibrationErrorWidget* calibrationErrorWidget)
+{
+  this->calibrationErrorWidget = calibrationErrorWidget;
+}

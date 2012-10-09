@@ -104,10 +104,6 @@ public:
      */
     void displaySelectedImage(int idx);
     
-	void startTracer();
-
-	void initPicker();
-    
     /***************************
      *   get and set methods
      ***************************/
@@ -196,11 +192,25 @@ public:
     /** \brief Flag to know if it's displayed an image stack */
     bool isImageStackLoaded;
 
+	///////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////
+
 	bool probeFlag;
 
 	vtkSmartPointer<vtkTracerInteractorStyle> tracerStyle;
 
 	void setCalibrationErrorWidget(CheckCalibrationErrorWidget* calibrationErrorWidget); 
+
+	void startTracer();
+
+	void initPicker();
+
+	int getImageStackSize();
+
+	////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////
 
 private:    
 
@@ -270,10 +280,7 @@ private:
      */
     void setImageProperties(bool verbose);
     
-    /**
-     * Display the given vtkImage
-     */
-    void displayImage(vtkImageData *image);
+   
     
     /* -------- necesary vtk objects to display an image ------ */
     
@@ -283,9 +290,20 @@ private:
     /** \brief Object for display information in the corners of the vtkImageViewer2 */
     vtkSmartPointer<vtkCornerAnnotation> cornerAnnotation;
 
-	
+	///////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////
+
     CheckCalibrationErrorWidget* calibrationErrorWidget;
 
+	 /**
+     * Display the given vtkImage
+     */
+    void displayImage(vtkImageData *image);
+
+	///////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////
 };
 
 

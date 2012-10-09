@@ -54,9 +54,7 @@ public:
     
     /** Set the window to display the crop images */
     void setMainWindow(MainWindow* mainwindow);
-    
-    
-    
+        
     
 private:
     
