@@ -209,8 +209,9 @@ void CheckCalibrationErrorWidget::closeEvent( QCloseEvent * event)
 void CheckCalibrationErrorWidget::setTracedPoints(vtkSmartPointer<vtkPoints> points)
 {
  	int row = mainWindow->getDisplayWidget()->getImageDisplayedIndex();
-	//pointsVector[row] = points;
-
+	std::cout<<"traced "<<row<<std::endl;
+	pointsVector[row] = points;
+	
 	QString str;
 
 	tableWidget->setItem(row, 0, new QTableWidgetItem(str.setNum(row)));

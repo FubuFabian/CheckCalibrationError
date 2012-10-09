@@ -218,6 +218,7 @@ void QVTKImageWidget::startTracer()
 {
 
   tracerStyle = vtkSmartPointer<vtkTracerInteractorStyle>::New();
+  tracerStyle->setCalibrationErrorWidget(calibrationErrorWidget);
   imageViewer->GetRenderWindow()->GetInteractor()->SetInteractorStyle(tracerStyle);
   
   imageViewer->Render();
