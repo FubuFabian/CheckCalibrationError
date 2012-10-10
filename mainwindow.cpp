@@ -122,14 +122,7 @@ void MainWindow::checkCalibrationError()
 	  	displayWidget->setProbeFlag(false);
 		displayWidget->startTracer();
 	  
-      // get left mouse pressed with high priority
-      //Connections->Connect(displayWidget->getQVTKWidget()->GetRenderWindow()->GetInteractor(),
-      //                     vtkCommand::LeftButtonPressEvent,
-	  //				   checkCalibrationWidget,
-	  //				   SLOT(loadRotations()));
-
-      checkCalibrationWidget->setMainWindow(this);
-	  checkCalibrationWidget->setImageStackSize(displayWidget->getImageStackSize());
+      checkCalibrationWidget->setMainWindow(this); 
       checkCalibrationWidget->show();
     }
   else

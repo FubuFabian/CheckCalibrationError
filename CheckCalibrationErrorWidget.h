@@ -6,6 +6,9 @@
 
 #include <QWidget>
 #include <vtkPoints.h>
+#include <vnl/vnl_vector.h>
+#include <vnl/vnl_matrix.h>
+
 
 class CheckCalibrationErrorWidget : public QWidget, private Ui::CheckCalibrationErrorWidget
 {
@@ -34,8 +37,6 @@ public:
     void setMainWindow(MainWindow* mainwindow);
 
 	void setTracedPoints(vtkSmartPointer<vtkPoints> points);
-
-	void setImageStackSize(int imageStackSize);
     
 private:
     Ui::CheckCalibrationErrorWidget *ui;
@@ -65,11 +66,13 @@ private:
     /** \brief the vtkImageData to work */
     vtkSmartPointer<vtkImageData> image;
 
-	std::vector<vtkSmartPointer< vtkPoints >> pointsVector;
+	std::vector< vtkSmartPointer<vtkPoints> > pointsVector;
 
-	vtkSmartPointer<vtkPoints> points;
+	//vtkSmartPointer<vtkPoints> points;
 
-	virtual void closeEvent( QCloseEvent * event);	
+	virtual void closeEvent( QCloseEvent * event);
+
+	vnl_matrix<double> transformPoints();
 
 private slots:
 

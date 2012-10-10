@@ -1,5 +1,7 @@
 #include "CheckCalibrationErrorWidget.h"
 
+#include <vnl/vnl_quaternion.h>
+
 CheckCalibrationErrorWidget::CheckCalibrationErrorWidget(QWidget* parent) : QWidget(parent)
 {
     this->setupUi(this);
@@ -191,6 +193,10 @@ setImageStack(std::vector<vtkSmartPointer<vtkImageData> > imagestack)
 {
     this->workWithStack = true;
     this->imageStack = imagestack;
+	tableWidget->setRowCount(imageStack.size());
+	pointsVector.reserve(imagestack.size());
+	pointsVector.assign(imagestack.size(),0);
+
 }
 
 void CheckCalibrationErrorWidget::setMainWindow(MainWindow* mainwindow)
@@ -208,17 +214,92 @@ void CheckCalibrationErrorWidget::closeEvent( QCloseEvent * event)
 
 void CheckCalibrationErrorWidget::setTracedPoints(vtkSmartPointer<vtkPoints> points)
 {
+	int size = pointsVector.size();
  	int row = mainWindow->getDisplayWidget()->getImageDisplayedIndex();
-	std::cout<<"traced "<<row<<std::endl;
+	std::cout<<"traced "<<row<<" size"<<size<<std::endl;
+
 	pointsVector[row] = points;
-	
+
 	QString str;
 
 	tableWidget->setItem(row, 0, new QTableWidgetItem(str.setNum(row)));
     tableWidget->setItem(row, 1, new QTableWidgetItem("Ok"));
 }
 
-void CheckCalibrationErrorWidget::setImageStackSize(int imageStackSize)
+vnl_matrix<double> CheckCalibrationErrorWidget::transformPoints()
 {
- 	pointsVector.reserve(imageStackSize);
+	double x = calibrationData[0];
+	double y = calibrationData[1];
+	double z = calibrationData[2];
+	double a = calibrationData[3];
+	double b = calibrationData[4];
+	double c = calibrationData[5];
+
+	vnl_vector<double> scale;
+	scale.set_size(2);
+
+	scale.put(0,calibrationData[6]);
+	scale.put(1,calibrationData[7]);
+
+	vnl_quaternion<double> rTpQuat(c, b, a);
+	vnl_matrix<double> rTp = rTpQuat.rotation_matrix_transpose_4();
+	rTp = rTp.transpose();
+	rTp.put(0, 3, x);
+	rTp.put(1, 3, y);
+	rTp.put(2, 3, z);
+ 
+	vnl_vector<double> point;
+	point.set_size(4);
+
+	point[2] = 0;
+	point[3] = 1;
+
+	vnl_vector<double> transformedPoint;
+	transformedPoint.set_size(4);
+
+	vnl_matrix<double> transformedPoints;
+	transformedPoints.set_size(0,3);
+	
+	int p = 0;
+
+	for (int i=0; i<imageStack.size(); i++){   
+		
+		vnl_vector<double> quaternion = rotations.get_row(i);
+		vnl_vector<double> translation = translations.get_row(i);
+
+		vnl_quaternion<double> tTrQuat(quaternion[1], quaternion[2], quaternion[3], quaternion[0]);
+		vnl_matrix<double> tTr = tTrQuat.rotation_matrix_transpose_4();
+		tTr = tTr.transpose();
+		tTr.put(0, 3, translation[0]);
+		tTr.put(1, 3, translation[1]);
+		tTr.put(2, 3, translation[2]);
+
+		vnl_matrix<double> tTp = tTr*rTp;
+
+		vtkSmartPointer<vtkPoints> points = pointsVector.at(i);
+
+		int oldSize = transformedPoints.size();
+		int newSize = points->GetNumberOfPoints();
+
+		transformedPoints.set_size(oldSize + newSize,3);
+			
+		for(int j=0; j<points->GetNumberOfPoints(); j++){
+
+			 double * x = points->GetPoint(j);
+
+			 point[0] = scale[0]*x[0];
+			 point[1] = scale[1]*x[1];
+
+			 transformedPoint = tTp*point;
+
+			 transformedPoints.put(p,0,transformedPoint[0]);
+			 transformedPoints.put(p,1,transformedPoint[1]);
+			 transformedPoints.put(p,2,transformedPoint[2]);
+
+			 p++;
+
+		}
+    }
+
+	return transformedPoints;
 }
