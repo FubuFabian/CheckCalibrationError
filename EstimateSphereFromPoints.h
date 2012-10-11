@@ -9,17 +9,6 @@
 #include <vnl/vnl_math.h>
 #include <vnl/vnl_least_squares_function.h>
 	
-class SphereFunction : public vnl_least_squares_function {
-	
-public:
-	
-	SphereFunction()
-		: vnl_least_squares_function(3, 4, no_gradient) {}
-
-	~SphereFunction() {}
-
-};
-
 class EstimateSphereFromPoints
 {
 

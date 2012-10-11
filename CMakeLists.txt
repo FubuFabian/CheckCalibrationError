@@ -43,14 +43,13 @@ INCLUDE_DIRECTORIES(
 # Set your files and resources here
 SET(AppSrcs main.cpp mainwindow.cpp QVTKImageWidget.cpp QVTKImageWidgetCommand.cpp 
     ProbeCalibrationWidget.cpp Calibration.cpp CheckCalibrationErrorWidget.cpp vtkTracerInteractorStyle.cpp
-    EstimateSphereFromPoints.cpp)
+    EstimateSphereFromPoints.cpp SphereFunction.cpp)
     
 SET(AppHeaders mainwindow.h QVTKImageWidget.h QVTKImageWidgetCommand.h 
     ProbeCalibrationWidget.h Calibration.h CheckCalibrationErrorWidget.h vtkTracerInteractorStyle.h
-    EstimateSphereFromPoints.h)
+    EstimateSphereFromPoints.h SphereFunction.h)
     
 SET(AppUI mainwindow.ui ProbeCalibrationWidget.ui CheckCalibrationErrorWidget.ui)
- 
  
 # for generate qt aditional files 
 QT4_WRAP_UI(UISrcs ${AppUI})
