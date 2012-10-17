@@ -1,4 +1,5 @@
 #include "CheckCalibrationErrorWidget.h"
+#include "EstimateSphereFromPoints.h"
 
 #include <vnl/vnl_quaternion.h>
 
@@ -17,7 +18,7 @@ CheckCalibrationErrorWidget::~CheckCalibrationErrorWidget()
 void CheckCalibrationErrorWidget::loadCenter()
 {
 
-	QString centerFilename = QFileDialog::getOpenFileName(this, tr("Load Translations File"), 
+	QString centerFilename = QFileDialog::getOpenFileName(this, tr("Load Center File"), 
 		QDir::currentPath(),tr("Txt (*.txt *.doc)"));
     
 	std::cout<<std::endl;
@@ -32,12 +33,26 @@ void CheckCalibrationErrorWidget::loadCenter()
             return;
         }
         
-        QTextStream stream(&file);
+        QTextStream strSize(&file);
         QString line;
         
         // declare a translation matrix 
-        this->translations.set_size(imageStack.size(), 4); 
-        
+ 
+		int fileSize = 0;
+
+        while (!strSize.atEnd())
+		{
+			strSize.readLine();
+			fileSize++;
+		}
+
+		this->centers.set_size(fileSize, 3);
+
+		file.close();
+		file.open(QIODevice::ReadOnly);
+
+		QTextStream stream(&file);
+
         int idx = 0;
         while (!stream.atEnd())
         {
@@ -51,6 +66,7 @@ void CheckCalibrationErrorWidget::loadCenter()
             idx++;   
             //std::cout << line.toAscii().data() << std::endl;
         }
+
         file.close(); // when your done.        
 
     }
@@ -119,7 +135,7 @@ void CheckCalibrationErrorWidget::loadTranslations()
         QString line;
         
         // declare a translation matrix 
-        this->translations.set_size(imageStack.size(), 4); 
+        this->translations.set_size(imageStack.size(), 3); 
         
         int idx = 0;
         while (!stream.atEnd())
@@ -134,7 +150,7 @@ void CheckCalibrationErrorWidget::loadTranslations()
             idx++;   
             //std::cout << line.toAscii().data() << std::endl;
         }
-        file.close(); // when your done.        
+        file.close(); // when your done. 
 
     }
 }
@@ -173,6 +189,12 @@ void CheckCalibrationErrorWidget::loadCalibration()
 }
 
 void CheckCalibrationErrorWidget::checkError(){
+
+	EstimateSphereFromPoints * estimator = EstimateSphereFromPoints::New();
+	
+	estimator->setCenter(centers);
+	estimator->setPoints(transformPoints());
+	estimator->estimateSphere();
 
 }
 
@@ -216,7 +238,6 @@ void CheckCalibrationErrorWidget::setTracedPoints(vtkSmartPointer<vtkPoints> poi
 {
 	int size = pointsVector.size();
  	int row = mainWindow->getDisplayWidget()->getImageDisplayedIndex();
-	std::cout<<"traced "<<row<<" size"<<size<<std::endl;
 
 	pointsVector[row] = points;
 
@@ -228,6 +249,10 @@ void CheckCalibrationErrorWidget::setTracedPoints(vtkSmartPointer<vtkPoints> poi
 
 vnl_matrix<double> CheckCalibrationErrorWidget::transformPoints()
 {
+
+	std::cout<<std::endl;
+	std::cout<<"Transforming points"<<std::endl;	
+
 	double x = calibrationData[0];
 	double y = calibrationData[1];
 	double z = calibrationData[2];
@@ -257,9 +282,14 @@ vnl_matrix<double> CheckCalibrationErrorWidget::transformPoints()
 	vnl_vector<double> transformedPoint;
 	transformedPoint.set_size(4);
 
-	vnl_matrix<double> transformedPoints;
-	transformedPoints.set_size(0,3);
-	
+	std::vector<vnl_vector< double > > transX;
+	std::vector<vnl_vector< double > > transY;
+	std::vector<vnl_vector< double > > transZ;
+
+	transX.reserve(imageStack.size());
+	transY.reserve(imageStack.size());
+	transZ.reserve(imageStack.size());
+
 	int p = 0;
 
 	for (int i=0; i<imageStack.size(); i++){   
@@ -278,12 +308,17 @@ vnl_matrix<double> CheckCalibrationErrorWidget::transformPoints()
 
 		vtkSmartPointer<vtkPoints> points = pointsVector.at(i);
 
-		int oldSize = transformedPoints.size();
 		int newSize = points->GetNumberOfPoints();
-
-		transformedPoints.set_size(oldSize + newSize,3);
 			
-		for(int j=0; j<points->GetNumberOfPoints(); j++){
+		vnl_vector<double> transformedPointsX;
+		vnl_vector<double> transformedPointsY;
+		vnl_vector<double> transformedPointsZ;
+		
+		transformedPointsX.set_size(newSize);
+		transformedPointsY.set_size(newSize);
+		transformedPointsZ.set_size(newSize);
+
+		for(int j=0; j<newSize; j++){
 
 			 double * x = points->GetPoint(j);
 
@@ -292,14 +327,40 @@ vnl_matrix<double> CheckCalibrationErrorWidget::transformPoints()
 
 			 transformedPoint = tTp*point;
 
-			 transformedPoints.put(p,0,transformedPoint[0]);
-			 transformedPoints.put(p,1,transformedPoint[1]);
-			 transformedPoints.put(p,2,transformedPoint[2]);
+			 transformedPointsX.put(j,transformedPoint[0]);
+			 transformedPointsY.put(j,transformedPoint[1]);
+			 transformedPointsZ.put(j,transformedPoint[2]);
 
 			 p++;
 
 		}
+
+		transX.push_back(transformedPointsX);
+		transY.push_back(transformedPointsY);
+		transZ.push_back(transformedPointsZ);
     }
+
+
+	vnl_matrix<double> transformedPoints;
+	transformedPoints.set_size(p,3);
+
+	int pp = 0;
+	for(int i=0; i<imageStack.size(); i++)
+	{
+		vnl_vector<double> X = transX[i];
+		vnl_vector<double> Y = transY[i];
+		vnl_vector<double> Z = transZ[i];
+
+		for(int j=0; j<X.size(); j++)
+		{
+			transformedPoints.put(pp,0,X[j]);
+			transformedPoints.put(pp,1,Y[j]);
+			transformedPoints.put(pp,2,Z[j]);
+
+			pp++;
+
+		}
+	}
 
 	return transformedPoints;
 }

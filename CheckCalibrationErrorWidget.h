@@ -9,7 +9,6 @@
 #include <vnl/vnl_vector.h>
 #include <vnl/vnl_matrix.h>
 
-
 class CheckCalibrationErrorWidget : public QWidget, private Ui::CheckCalibrationErrorWidget
 {
     Q_OBJECT

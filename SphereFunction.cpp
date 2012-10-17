@@ -23,7 +23,7 @@ void SphereFunction::f(const vnl_vector<double> &x, vnl_vector<double> &fx)
 		
 		vnl_vector<double> point = _data->get_row(i);
 
-		fx[i] = (point[0] - xh)
+		fx[i] = vnl_math_sqr(point[0] - xh) + vnl_math_sqr(point[1] - yh) + vnl_math_sqr(point[2] - zh) + vnl_math_sqr(r);
     }
 }
 

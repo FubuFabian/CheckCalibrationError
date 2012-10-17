@@ -109,6 +109,8 @@ void MainWindow::probeCalibration()
 void MainWindow::checkCalibrationError()
 {
 
+	std::cout<<"Check Calibration Error"<<std::endl<<std::endl;
+
 	if (!displayWidget->getImageStack().empty())
     {
       CheckCalibrationErrorWidget* checkCalibrationWidget = new CheckCalibrationErrorWidget();
