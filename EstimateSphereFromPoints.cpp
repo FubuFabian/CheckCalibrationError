@@ -49,7 +49,8 @@ void EstimateSphereFromPoints::estimateSphere()
 
 	for(int i=0; i<points.rows(); i++)
 	{
-		dist[i] = sqrt(pow((pCenterX - points.get_column(0)[i]),2) + pow((pCenterY - points.get_column(1)[i]),2) +pow((pCenterZ - points.get_column(2)[i]),2));
+		vnl_vector<double> sPoint = points.get_row(i);
+		dist[i] = sqrt(pow((pCenterX - sPoint[0]),2) + pow((pCenterY - sPoint[1]),2) +pow((pCenterZ - sPoint[2]),2));
 	}
 
 	double pRadius = dist.mean();
@@ -60,8 +61,8 @@ void EstimateSphereFromPoints::estimateSphere()
 	vnl_vector<double> x(4);
 	x.put(0,pCenterX);
 	x.put(1,pCenterY);
-	x.put(2,61.55);
-	x.put(3,6.51);
+	x.put(2,pCenterZ);
+	x.put(3,pRadius);
 
 	SphereFunction sphereFunc(&points);
 

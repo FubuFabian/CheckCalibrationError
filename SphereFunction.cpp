@@ -1,6 +1,6 @@
 #include "SphereFunction.h"
 
-#include <vnl/vnl_math.h>
+#include <math.h>
 
 
 SphereFunction::SphereFunction(vnl_matrix<double> * points)
@@ -22,9 +22,8 @@ void SphereFunction::f(const vnl_vector<double> &x, vnl_vector<double> &fx)
     for(int i=0; i< _data->rows(); i++){
 		
 		vnl_vector<double> point = _data->get_row(i);
+		fx[i] = pow(point[0] - xh,2) + pow(point[1] - yh,2) + pow(point[2] - zh,2) - pow(r,2);
 
-		fx[i] = vnl_math_sqr(point[0] - xh) + vnl_math_sqr(point[1] - yh) + vnl_math_sqr(point[2] - zh) + vnl_math_sqr(r);
     }
 }
-
 

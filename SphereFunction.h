@@ -4,6 +4,7 @@
 #endif // SPHEREFUNCTION_H
 
 #include <vnl/vnl_least_squares_function.h>
+#include <vnl/vnl_cost_function.h>
 #include <vnl/vnl_matrix.h>
 #include <vnl/vnl_vector.h>
 #include <vector>
@@ -25,3 +26,4 @@ private:
     vnl_matrix<double> * _data;
 
 };
+
