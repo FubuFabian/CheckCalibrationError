@@ -12,11 +12,6 @@ void EstimateSphereFromPoints::setPoints(vnl_matrix<double> points)
     this->points = points;
 }
 
-void EstimateSphereFromPoints::setCenter(vnl_matrix<double> centers)
-{
-    this->centers = centers;
-}
-
 vnl_vector<double> EstimateSphereFromPoints::getSphere()
 {
     return sphere;
@@ -24,13 +19,6 @@ vnl_vector<double> EstimateSphereFromPoints::getSphere()
 
 void EstimateSphereFromPoints::estimateSphere()
 {
-
-	double centerX = centers.get_column(0).mean();
-	double centerY = centers.get_column(1).mean();
-	double centerZ = centers.get_column(2).mean();
-	
-	std::cout<<std::endl;
-	std::cout<<"Tracked center: "<<centerX<<", "<<centerY<<", "<<centerZ<<std::endl;
 
 	double nPoints = points.rows();
 
@@ -50,13 +38,13 @@ void EstimateSphereFromPoints::estimateSphere()
 	for(int i=0; i<points.rows(); i++)
 	{
 		vnl_vector<double> sPoint = points.get_row(i);
-		dist[i] = sqrt(pow((pCenterX - sPoint[0]),2) + pow((pCenterY - sPoint[1]),2) +pow((pCenterZ - sPoint[2]),2));
+		dist[i] = sqrt(pow((pCenterX - sPoint[0]),2) + pow((pCenterY - sPoint[1]),2) + pow((pCenterZ - sPoint[2]),2));
 	}
 
 	double pRadius = dist.mean();
 
 	std::cout<<std::endl;
-	std::cout<<"Initial values for radius "<<pRadius<<std::endl;
+	std::cout<<"Initial values for radius "<<pRadius<<std::endl<<std::endl;
 
 	vnl_vector<double> x(4);
 	x.put(0,pCenterX);
@@ -67,13 +55,12 @@ void EstimateSphereFromPoints::estimateSphere()
 	SphereFunction sphereFunc(&points);
 
 	vnl_levenberg_marquardt LM(sphereFunc);
-    LM.set_verbose(true);
+    LM.set_verbose(false);
     
-    LM.set_f_tolerance(10e-10);
-    LM.set_x_tolerance(10e-10);
-   
-       // max iterations 5000
-    LM.set_max_function_evals(5000);
+    LM.set_f_tolerance(1e-6);
+    LM.set_x_tolerance(1e-6);
+
+    LM.set_max_function_evals(100*nPoints);
     
     bool okOptimization = false;
     
@@ -86,9 +73,10 @@ void EstimateSphereFromPoints::estimateSphere()
 		std::cout<<"Excepcion"<<std::endl;
     }
 
-  LM.diagnose_outcome(std::cout);
-  std::cout << "x = " << x << std::endl;
+	LM.diagnose_outcome(std::cout);
+	std::cout<<std::endl<<"Sphere = " << x << std::endl;
 
-
+	sphere.set_size(4);
+	sphere = x;
 }
 

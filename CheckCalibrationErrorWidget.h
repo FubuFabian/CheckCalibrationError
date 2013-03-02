@@ -9,6 +9,13 @@
 #include <vnl/vnl_vector.h>
 #include <vnl/vnl_matrix.h>
 
+//!Check the calibration error
+/*!
+  This class Check the calibration Error by estimating the center and the radius of a tracked sphere
+  using EstimateSpehereFromPoints.h and meassures the distance between the tracked center and the estimated
+  center as the calibration error. It allows the user to select points on the surface of the sphere from
+  each image manualy. The error can be saved in a .txt file.
+*/
 class CheckCalibrationErrorWidget : public QWidget, private Ui::CheckCalibrationErrorWidget
 {
     Q_OBJECT
@@ -17,6 +24,7 @@ public:
        /** Constructor */
     CheckCalibrationErrorWidget(QWidget* parent = 0);
     
+	 /** Destructor */
     virtual ~CheckCalibrationErrorWidget();
 
 	 /**
@@ -40,6 +48,7 @@ public:
 private:
     Ui::CheckCalibrationErrorWidget *ui;
 
+	 /** \brief a flag to work with multiple images*/
 	bool workWithStack;
 
 	 /** \brief an Array of vtkImageData to work */
@@ -65,26 +74,36 @@ private:
     /** \brief the vtkImageData to work */
     vtkSmartPointer<vtkImageData> image;
 
+	 /** \brief a Vector that has the traced points*/
 	std::vector< vtkSmartPointer<vtkPoints> > pointsVector;
 
-	//vtkSmartPointer<vtkPoints> points;
+	/** \brief a Vector that contain the calibration Error */	
+	vnl_vector<double> error;
 
+	//vtkSmartPointer<vtkPoints> points;
 	virtual void closeEvent( QCloseEvent * event);
 
+	 /** \brief Transform the vectorPoints to its world coordinates */
 	vnl_matrix<double> transformPoints();
 
 private slots:
 
+	 /** \brief load the tracked Center of the sphere*/
     void loadCenter();
 
+	 /** \brief load the Rotations for each image */
     void loadRotations();
 
+	/** \brief load the Translations for each image */
     void loadTranslations();
 
+	/** \brief load the Calibration to check */
     void loadCalibration();
 
+	/** \brief Cehck the calibration error */
     void checkError();
 
+	/** \brief Save the calibration error in a txt file */
     void saveError();
 };
 

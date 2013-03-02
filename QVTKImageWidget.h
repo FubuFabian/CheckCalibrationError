@@ -37,8 +37,6 @@
 #include <vtkProperty.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkPolyData.h>
 #include <vtkImageTracerWidget.h>
@@ -195,6 +193,8 @@ public:
 	///////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////
+
+	//se modifico display image
 
 	bool probeFlag;
 

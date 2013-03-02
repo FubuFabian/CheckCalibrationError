@@ -3,6 +3,10 @@
 
 #include <vnl/vnl_quaternion.h>
 
+#include <QString>
+#include <QFile>
+#include <QTextStream>
+
 CheckCalibrationErrorWidget::CheckCalibrationErrorWidget(QWidget* parent) : QWidget(parent)
 {
     this->setupUi(this);
@@ -192,15 +196,66 @@ void CheckCalibrationErrorWidget::checkError(){
 
 	EstimateSphereFromPoints * estimator = EstimateSphereFromPoints::New();
 	
-	estimator->setCenter(centers);
+	double centerX = centers.get_column(0).mean();
+	double centerY = centers.get_column(1).mean();
+	double centerZ = centers.get_column(2).mean();
+	double radius = 5.75;
+	
+	std::cout<<std::endl;
+	std::cout<<"Tracked center: "<<centerX<<", "<<centerY<<", "<<centerZ<<std::endl;
+
 	estimator->setPoints(transformPoints());
 	estimator->estimateSphere();
+
+	vnl_vector<double> sphere = estimator->getSphere();
+
+	error.set_size(5);
+
+	error[0] = sqrt(pow(centerX-sphere[0],2)); 
+	error[1] = sqrt(pow(centerY-sphere[1],2));
+	error[2] = sqrt(pow(centerZ-sphere[2],2));
+	error[3] = sqrt(pow(radius-sphere[3],2)); 
+	error[4] = sqrt(pow(centerX-sphere[0],2) + pow(centerY-sphere[1],2) + pow(centerZ-sphere[2],2));
+
+	std::cout<<std::endl<<"Error in X: "<<error[0]<<"mm"<<std::endl;
+	std::cout<<std::endl<<"Error in Y: "<<error[1]<<"mm"<<std::endl;
+	std::cout<<std::endl<<"Error in Z: "<<error[2]<<"mm"<<std::endl;
+	std::cout<<std::endl<<"Error: "<<error[4]<<"mm"<<std::endl;
+	std::cout<<std::endl<<"Error in Radius: "<<error[3]<<"mm"<<std::endl;
+
 
 }
 
 void CheckCalibrationErrorWidget::saveError()
 {
 
+	QString saveCalibrationDirectory = QFileDialog::getExistingDirectory(
+                this, tr("Choose Directory to Save Calibration Error"), QDir::currentPath(), 
+				QFileDialog::ShowDirsOnly );
+
+    QString filename = "/CalibrationError.txt";
+
+    QString saveCalibrationFile = saveCalibrationDirectory.append(filename);
+
+    QFile file(saveCalibrationFile);
+
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        std::cout<<"Could not open File to save the estimated calibration parameters"<<std::endl;
+        return;
+    }
+
+	std::cout<<std::endl;
+	std::cout<<"Writing Calibration Error"<<std::endl;
+
+	QTextStream out(&file);
+
+	out<<"Error in X: "<<error[0]<<"mm"<<"\n";
+	out<<"Error in Y: "<<error[1]<<"mm"<<"\n";
+	out<<"Error in Z: "<<error[2]<<"mm"<<"\n";
+	out<<"Error: "<<error[4]<<"mm"<<"\n";
+	out<<"Error in Radius: "<<error[3]<<"mm"<<"\n";
+
+	file.close();
 }
 
 void CheckCalibrationErrorWidget::setImage(vtkSmartPointer<vtkImageData> image)
@@ -318,12 +373,16 @@ vnl_matrix<double> CheckCalibrationErrorWidget::transformPoints()
 		transformedPointsY.set_size(newSize);
 		transformedPointsZ.set_size(newSize);
 
+		int* dimension = imageStack.at(i)->GetDimensions();     
+
 		for(int j=0; j<newSize; j++){
 
 			 double * x = points->GetPoint(j);
+			 int xPos = x[0];
+			 int yPos = (dimension[1]-1) - x[1];
 
-			 point[0] = scale[0]*x[0];
-			 point[1] = scale[1]*x[1];
+			 point[0] = scale[0]*xPos;
+			 point[1] = scale[1]*yPos;
 
 			 transformedPoint = tTp*point;
 
